@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <cassert>
 using namespace std;
  
 int tally (const string a[], int n, string target) {
@@ -178,10 +179,9 @@ int main() {
     int e = 1;
     string test_array[]  = {"beads", "bees", "buster", "sit", "zeta", "zzyzx", "zzyzx"};
     string test_array_2[]  = {"amet", "dolor", "lorem"};
-    string result[32];
-    cout << mingle(test_array, 7, test_array_2, 3, result, 10);
-    for (int i=0; i < 32; i++) {
-        cout << result[i] << ", ";
+    cout << divide(test_array, 7, "lucille") << "\n";
+    for (int i = 0; i < 7; i++) {
+        cout << test_array[i];
     }
 
     cout << "\n";
