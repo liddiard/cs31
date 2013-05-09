@@ -1,4 +1,4 @@
-a) This was the first assignment where I ran into segfaults, most of which were due to attempting to access an array index that didn't exist. I just commented out suspect portions of code and uncommented them line-by-line until I found the error. Other than that, I just had a couple boundary conditions and size of array vs. array index mixups that caused some issues.
+a) This was the first assignment where I ran into segfaults, most of which were due to attempting to access an array index that didn't exist. I just commented out suspect portions of code and uncommented them line-by-line until I found the error. The removeDups function required some tricky coding, but reusing other functions declared above proved to be useful. Other than that, boundary conditions and length vs. number of items in array caused a couple issues.
 b)  string h[7] = { "peter", "lois", "meg", "chris", "", "stewie", "meg" };
     assert(tally(h, 7, "meg") == 2); //test tally with a string that is in the array
     assert(tally(h, 7, "") == 1); //test tally with an empty string in the array
