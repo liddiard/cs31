@@ -1,0 +1,30 @@
+a) This was the first assignment where I ran into segfaults, most of which were due to attempting to access an array index that didn't exist. I just commented out suspect portions of code and uncommented them line-by-line until I found the error. Other than that, I just had a couple boundary conditions and size of array vs. array index mixups that caused some issues.
+b)  string h[7] = { "peter", "lois", "meg", "chris", "", "stewie", "meg" };
+    assert(tally(h, 7, "meg") == 2); //test tally with a string that is in the array
+    assert(tally(h, 7, "") == 1); //test tally with an empty string in the array
+    assert(tally(h, 7, "quagmire") == 0); //test tally with a string that is not in the array
+    assert(tally(h, 0, "meg") == 0); //test tally with a passed length value of 0
+    assert(findFirst(h, 7, "meg") == 2); //test findFirst with a string that is in the range passed
+    assert(findFirst(h, 2, "meg") == -1); //test findFirst with a string that is not in the range passed
+    int bg;
+    int en;
+    assert(findFirstSequence(h, 7, "chris", bg, en) && bg == 3 && en == 3); //test FindFirst sequence
+
+    string g[4] = { "peter", "lois", "chris", "stewie" };
+    assert(positionOfMin(g, 4) == 2);
+    assert(disagree(h, 4, g, 4) == 2);
+    assert(subsequence(h, 7, g, 4));
+    assert(moveToEnd(g, 4, 1) == 1 && g[1] == "chris" && g[3] == "lois");
+
+    string f[4] = { "chris", "stewie", "meg", "lois" };
+    assert(moveToBeginning(f, 4, 2) == 2 && f[0] == "meg" && f[2] == "stewie");
+
+    string e[5] = { "chris", "chris", "chris", "meg", "meg" };
+    assert(removeDups(e, 5) == 2 && e[1] == "meg");
+
+    string x[4] = { "brian", "lois", "lois", "quagmire" };
+    string y[4] = { "chris", "lois", "meg", "stewie" };
+    string z[10];
+    assert(mingle(x, 4, y, 4, z, 10) == 8 && z[5] == "meg");
+
+    assert(divide(h, 7, "meg") == 3);

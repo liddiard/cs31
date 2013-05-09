@@ -201,7 +201,7 @@ int divide(string a[], int n, string divider) {
  
 int main() {
         string h[7] = { "peter", "lois", "meg", "chris", "", "stewie", "meg" };
-	    assert(tally(h, 7, "meg") == 2);
+        assert(tally(h, 7, "meg") == 2);
 	    assert(tally(h, 7, "") == 1);
 	    assert(tally(h, 7, "quagmire") == 0);
 	    assert(tally(h, 0, "meg") == 0);
