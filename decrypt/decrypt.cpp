@@ -91,16 +91,31 @@ bool decrypt(istream& cipherstream, char crib[]) {
         }
     }
     
-    /* test output */    
+    
+    /* use length-comparing heuristic */
+    int match_beginning_point[MAXCHAR];
+    int match_beginning_point_head = 0;
+    for (int i = 0; i < MAXCHAR; i++) {
+        match_beginning_point[i] = '\0'; //visit every character in the array and set it to the null byte
+    }
     for (int i = 0; i <= word_number; i++) {
-        cout << strlen(separate[i]) << ", ";
+        if (strlen(separate[i]) == strlen(crib_separate[0])) {
+            for (int j = 1; j <= crib_word_number; j++) {
+                if (strlen(separate[i+j]) != strlen(crib_separate[j])) {
+                    break;
+                } else if (j == crib_word_number) {
+                    match_beginning_point[match_beginning_point_head] = i;
+                    match_beginning_point_head++;
+                }
+            }
+        }
     }
     
-    cout << "\n";
-    
-    for (int i = 0; i <= crib_word_number; i++) {
-        cout << strlen(crib_separate[i]) << ", ";
+    /* test output */
+    for (int i = 0; i < match_beginning_point_head; i++) {
+        cout << match_beginning_point[i] << ", ";
     }
+    
 }
 
 int main () {
