@@ -51,7 +51,7 @@ bool decrypt(istream& cipherstream, char crib[]) {
     
     toLowerCase(message);
     
-    /* separate words */
+    /* separate message words */
     const int MAXSUP = 2066;
     const int MAXSUB = 81;
     char separate[MAXSUP][MAXSUB];
@@ -72,15 +72,34 @@ bool decrypt(istream& cipherstream, char crib[]) {
         }
     }
     
-    /* test output */
-    /*
-    for (int i = 0; i <= word_number; i++) {
-        cout << separate[i] << '\n';
+    /* separate crib words */
+    char crib_separate[MAXSUP][MAXSUB];
+    for (int i = 0; i < MAXSUP; i++) {
+        for (int j = 0; j < MAXSUB; j++) {
+            crib_separate[i][j] = '\0'; //visit every character in the array and set it to the null byte
+        }
     }
-    */
+    int crib_word_number = 0;
+    int crib_char_number = 0;
+    for (int head = 0; crib[head] != '\0'; head++) {
+        if (crib[head] == ' ') {
+            crib_word_number++;
+            crib_char_number = 0;
+        } else {
+            crib_separate[crib_word_number][crib_char_number] = crib[head];
+            crib_char_number++;
+        }
+    }
     
+    /* test output */    
     for (int i = 0; i <= word_number; i++) {
         cout << strlen(separate[i]) << ", ";
+    }
+    
+    cout << "\n";
+    
+    for (int i = 0; i <= crib_word_number; i++) {
+        cout << strlen(crib_separate[i]) << ", ";
     }
 }
 
@@ -92,7 +111,7 @@ int main () {
         return -1;
     }
     
-    char test_crib[10] = "Hello";
+    char test_crib[10] = "Hello son";
     
     decrypt(infile, test_crib);
     
