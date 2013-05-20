@@ -16,12 +16,6 @@ void toUpperCase(char s[]) {
     }
 }
 
-char separateWords(char s[]) {
-
-}
-
-
-
 bool decrypt(istream& cipherstream, char crib[]) {
     
     /* parse the input into one continuous cstring */
@@ -40,12 +34,16 @@ bool decrypt(istream& cipherstream, char crib[]) {
         for (int j = 0; line[j] != '\0'; j++) {
             if (isalpha(line[j])) {
                 message[write_head] = line[j];
+            } else if (message[write_head-1] == ' ') {
+                ; //prevents multiple consecutive spaces from being written
             } else {
                 message[write_head] = ' ';
             }
             write_head++;
         }
-        message[write_head] = ' ';
+        if (message[write_head-1] != ' ') { //prevents multiple consecutive spaces from being written
+            message[write_head] = ' ';
+        }
         write_head++;
     } while (line[0] != '\0');
     
