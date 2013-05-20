@@ -153,10 +153,23 @@ bool decrypt(istream& cipherstream, char crib[]) {
         }
         if (crib_match == message_match) {
             cout << "valid key found!"; //for each letter that has a match, cout the uppercase version, otherwise cout the original w/o transforming case, and return true
+            for (int j = 0; j < write_head; j++) { //for each character in message
+                for (int k = 0; k < key_head; k++) { //for each key/value pair in key
+                    if (key[k][0] == message[j]) {
+                        message[j] = toupper(key[k][1]);
+                    }
+                }
+            }
+            
+            /* test output */
+            for (int j = 0; j < write_head; j++) {
+                cout << message[j];
+            }
+            return true;
         }
         checkMatch: ; //placed here so i auto-incremented
     }
-    
+    return false; //if the function gets here, no valid matches were found
 }
 
 int main () {
