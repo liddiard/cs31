@@ -18,6 +18,10 @@ void toUpperCase(char s[]) {
 
 bool decrypt(istream& cipherstream, char crib[]) {
     
+    if (strlen(crib) > 80) {
+        return false;
+    }
+    
     /* parse the input into one continuous cstring */
     toLowerCase(crib);
     const int MAXCOL = 81;
@@ -34,20 +38,25 @@ bool decrypt(istream& cipherstream, char crib[]) {
         for (int j = 0; line[j] != '\0'; j++) {
             if (isalpha(line[j])) {
                 message[write_head] = line[j];
+                write_head++;
             } else if (write_head > 0 && message[write_head-1] == ' ') {
                 ; //prevents multiple consecutive spaces from being written
             } else {
                 message[write_head] = ' ';
+                write_head++;
             }
-            write_head++;
         }
         if (message[write_head-1] != ' ') { //prevents multiple consecutive spaces from being written
             message[write_head] = ' ';
+            write_head++;
         }
-        write_head++;
     } while (line[0] != '\0');
     
     toLowerCase(message);
+    
+    for (int i = 0; message[i] != '\0'; i++) {
+        cout << message[i];
+    }
     
     /* clean crib */
     int MAXCOL_CRIB = 80;
@@ -59,12 +68,13 @@ bool decrypt(istream& cipherstream, char crib[]) {
     for (int i = 0; crib[i] != '\0'; i++) {
         if (isalpha(crib[i])) {
             crib_clean[crib_clean_head] = crib[i];
+            crib_clean_head++;
         } else if (crib_clean_head > 0 && crib_clean[crib_clean_head-1] == ' ') {
             ; //prevents multiple consecutive spaces from being written
         } else {
             crib_clean[crib_clean_head] = ' ';
+            crib_clean_head++;
         }
-        crib_clean_head++;
     }
     
     /* separate message words */
@@ -114,7 +124,7 @@ bool decrypt(istream& cipherstream, char crib[]) {
         match_beginning_word[i] = '\0'; //visit every character in the array and set it to the null byte
     }
     for (int i = 0; i <= word_number; i++) {
-        if (strlen(separate[i]) == strlen(crib_separate[0])) {
+        if (strlen(separate[i]) == strlen(crib_separate[0])) { //check if each word is equal to the length of the first word of the crib
             for (int j = 1; j <= crib_word_number; j++) {
                 if (strlen(separate[i+j]) != strlen(crib_separate[j])) {
                     break;
@@ -128,7 +138,7 @@ bool decrypt(istream& cipherstream, char crib[]) {
     
     /* test output */
     for (int i = 0; i < match_beginning_word_head; i++) {
-        cout << match_beginning_word[i] << "\n";
+        cout << "\n" << match_beginning_word[i] << "\n";
     }
     
     /* match_beginning_word is an array of integers that stores
@@ -161,7 +171,7 @@ bool decrypt(istream& cipherstream, char crib[]) {
                     message_match++;
                     if (key[j][1] != key[k][1]) {
                         cout << "invalid key\n";
-                        goto checkMatch; //ruh-roh, they don't match, this key is not valid
+                        goto checkMatch; //NOPE, they don't match, this key is not valid
                     }
                     crib_match++;
                 }
@@ -196,7 +206,7 @@ int main () {
         return -1;
     }
     
-    char test_crib[10] = "Heleo son";
+    char test_crib[10] = "Helao sen";
     
     decrypt(infile, test_crib);
     
