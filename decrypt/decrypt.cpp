@@ -206,7 +206,7 @@ int main () {
         return -1;
     }
     
-    char test_crib[10] = "Helao sen";
+    char test_crib[10] = "my secret";
     
     decrypt(infile, test_crib);
     
