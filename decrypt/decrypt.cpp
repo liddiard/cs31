@@ -36,7 +36,7 @@ bool decrypt(istream& cipherstream, char crib[]) {
     do {
         cipherstream.getline(line, MAXCOL);
         for (int j = 0; line[j] != '\0'; j++) {
-            if (isalpha(line[j])) {
+            if (isprint(line[j])) {
                 message[write_head] = line[j];
                 write_head++;
             } else if (write_head > 0 && message[write_head-1] == ' ') {
