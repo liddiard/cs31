@@ -61,9 +61,11 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
     
     toLowerCase(message);
     
+    /* test output
     for (int i = 0; message[i] != '\0'; i++) {
         cout << message[i];
     }
+    */
     
     /* clean crib */
     int MAXCOL_CRIB = 80;
@@ -143,10 +145,11 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
         }
     }
     
-    /* test output */
+    /* test output
     for (int i = 0; i < match_beginning_word_head; i++) {
         cout << "\n" << match_beginning_word[i] << "\n";
     }
+    */
     
     /* match_beginning_word is an array of integers that stores
      * the positions of the first WORD in each phrase which fully matches the crib's length heuristic */
@@ -155,7 +158,7 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
     char key[MAXCHAR/2][2];
     for (int i = 0; i < match_beginning_word_head; i++) { //for each match
         int key_head = 0;
-        cout << "ITERATION: " << i << "\n"; //test output
+        //cout << "ITERATION: " << i << "\n"; //test output
         for (int j = 0; j <= crib_word_number; j++) { //for each word in each match
             for (int k = 0; k < strlen(crib_separate[j]); k++) { //for each character in each word
                 key[key_head][0] = separate[(match_beginning_word[i]+j)][k];
@@ -164,10 +167,11 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
             }
         }
         
-        /* test output */
+        /* test output
         for (int j = 0; j < key_head; j++) {
             cout << key[j][0] << " : " << key[j][1] << "\n";
         }
+        */
         
         /* check if the key is valid (has unique letter assignments) */
         int message_match = 0;
@@ -177,7 +181,7 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
                 if (key[j][0] == key[k][0]) {
                     message_match++;
                     if (key[j][1] != key[k][1]) {
-                        cout << "invalid key\n";
+                        //cout << "invalid key\n";
                         goto checkMatch; //NOPE, they don't match, this key is not valid
                     }
                     crib_match++;
@@ -185,7 +189,7 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
             }
         }
         if (crib_match == message_match) {
-            cout << "valid key found!\n"; //for each letter that has a match, cout the uppercase version, otherwise cout the original w/o transforming case, and return true
+            //cout << "valid key found!\n"; //for each letter that has a match, cout the uppercase version, otherwise cout the original w/o transforming case, and return true
             for (int j = 0; j < write_head; j++) { //for each character in message
                 for (int k = 0; k < key_head; k++) { //for each key/value pair in key
                     if (key[k][0] == message[j]) {
@@ -194,10 +198,11 @@ bool decrypt(istream& cipherstream, const char crib_const[]) {
                 }
             }
             
-            /* test output */
+            
             for (int j = 0; j < write_head; j++) {
                 cout << message[j];
             }
+            
             return true;
         }
         checkMatch: ; //placed here so i auto-incremented
