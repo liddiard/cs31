@@ -16,13 +16,17 @@ void toUpperCase(char s[]) {
     }
 }
 
-bool decrypt(istream& cipherstream, char crib[]) {
+bool decrypt(istream& cipherstream, const char crib_const[]) {
     
-    if (strlen(crib) > 80) {
+    if (strlen(crib_const) > 80) {
         return false;
     }
     
+    char crib[80];
     /* parse the input into one continuous cstring */
+    for (int i = 0; i < 80; i++) {
+        crib[i] = crib_const[i];
+    }
     toLowerCase(crib);
     const int MAXCOL = 81;
     const int MAXROW = 51;
@@ -33,8 +37,11 @@ bool decrypt(istream& cipherstream, char crib[]) {
     for (int i = 0; i < MAXCHAR; i++) {
         message[i] = '\0'; //visit every character in the array and set it to the null byte
     }
-    do {
+    while(1) {
         cipherstream.getline(line, MAXCOL);
+        if (line[0] == '\0') {
+            break;
+        }
         for (int j = 0; line[j] != '\0'; j++) {
             if (isprint(line[j])) {
                 message[write_head] = line[j];
@@ -47,10 +54,10 @@ bool decrypt(istream& cipherstream, char crib[]) {
             }
         }
         if (message[write_head-1] != ' ') { //prevents multiple consecutive spaces from being written
-            message[write_head] = ' ';
+            message[write_head] = '\n';
             write_head++;
         }
-    } while (line[0] != '\0');
+    }
     
     toLowerCase(message);
     
@@ -198,16 +205,23 @@ bool decrypt(istream& cipherstream, char crib[]) {
     return false; //if the function gets here, no valid matches were found
 }
 
-int main () {
-    /* open the input file */
-    ifstream infile("test_input.txt");
-    if (!infile) {
-        cerr << "opening file failed.";
-        return -1;
+void runtest(const char filename[], const char crib[])
+{
+    cout << "====== " << crib << endl;
+    ifstream cfile(filename);
+    if (!cfile)
+    {
+        cout << "Cannot open " << filename << endl;
+        return;
     }
-    
-    char test_crib[10] = "my secret";
-    
-    decrypt(infile, test_crib);
-    
+    bool result = decrypt(cfile, crib);
+    cout << "Return value: " << result << endl;
+}
+
+int main()
+{
+    cout.setf(ios::boolalpha); // output bools as "true"/"false"
+
+    runtest("test_input.txt", "my secret");
+    runtest("test_input.txt", "shadow");
 }

@@ -1,0 +1,63 @@
+a) It was tough to figue out how to separate the input string into an array of cstrings, split at the space. Apparently there's a token function to do this, but I wasn't aware of it when I wrote my code. A general problem I had was writing my code in a modular fashion. I was annoyed that c++ cannot return arrays. I learned later that you just have to provide an "output" array as well, but I didn't have time to implement this into my program. I at least developed incrementally, so fixing the majority of errors was not extremely difficult.
+b) Get the text from the input, separate the input into an array of cstrings, find candidates with a length heuristic, test each candidate. If match: cout the partially decrypted message and return true. Else, return false.
+c) [see below]
+Message:
+    Hirdd ejsy zu drvtry od.
+    O'z fodvtrry.
+Crib:
+    My secret
+Output:
+    hiESS ejsT MY SECRET oS.
+    o'M foSCREET.
+Message:
+    Hirdd ejsy zu drvtry od.
+    O'z fodvtrry.
+Crib:
+    shadow
+Output:
+    false
+Message:
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+    culpa qui officia deserunt mollit anim id est laborum.
+    Bob
+    A bunch of text and text and Jill, Kate, Loic, BOB, Byron, larry here.
+    Jill
+    end
+Crib:
+    helao sen
+Output:
+    Lorem NAsEm doLor sNt Omet HonseHtetEr OdNANsNHNng eLNt sed do eNEsmod temAor NnHNdNdEnt Et LObore et doLore mOgnO OLNSEO Et enNm Od mNnNm venNOm SENs nostrEd exerHNtOtNon ELLOmHo LOborNs nNsN Et OLNSENA ex eO Hommodo HonseSEOt dENs OEte NrEre doLor Nn reArehenderNt Nn voLEAtOte veLNt esse HNLLEm doLore eE fEgNOt nELLO AOrNOtEr exHeAteEr sNnt oHHOeHOt HEANdOtOt non AroNdent sEnt Nn HELAO SEN offNHNO deserEnt moLLNt OnNm Nd est LOborEm bob O bEnHh of text Ond text Ond jNLL kOte LoNH bob byron LOrry here jNLL end
+Message:
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+    culpa qui officia deserunt mollit anim id est laborum.
+    Bob
+    A bunch of text and text and Jill, Kate, Loic, BOB, Byron, larry here.
+    Jill
+    end
+Crib:
+    hello son
+Output:
+    false
+Message:
+    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
+    culpa qui officia deserunt mollit anim id est laborum.
+    Bob
+    A bunch of text and text and Jill, Kate, Loic, BOB, Byron, larry here.
+    Jill
+    end
+Crib:
+    heleo san
+Output:
+    Lorem NAsEm doLor sNt Omet HonseHtetEr OdNANsNHNng eLNt sed do eNEsmod temAor NnHNdNdEnt Et LObore et doLore mOgnO OLNSEO Et enNm Od mNnNm venNOm SENs nostrEd exerHNtOtNon ELLOmHo LOborNs nNsN Et OLNSENA ex eO Hommodo HonseSEOt dENs OEte NrEre doLor Nn reArehenderNt Nn voLEAtOte veLNt esse HNLLEm doLore eE fEgNOt nELLO AOrNOtEr exHeAteEr sNnt oHHOeHOt HEANdOtOt non AroNdent sEnt Nn HELAO SEN offNHNO deserEnt moLLNt OnNm Nd est LOborEm bob O bEnHh of text Ond text Ond jNLL kOte LoNH bob byron LOrry here jNLL end
