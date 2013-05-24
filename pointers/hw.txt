@@ -1,0 +1,70 @@
+1.a.
+int main()
+{
+    int arr[3] = { 5, 10, 15 };
+    int* ptr = arr;
+
+    *ptr = 10;          // set arr[0] to 10
+    *++ptr = 20;      // set arr[1] to 20
+    ptr += 2;
+    ptr[-1] = 30;        // set arr[2] to 30
+
+    while (ptr > arr)
+    {
+        ptr--;
+        cout << ' ' << *ptr;    // print values
+    }
+    cout << endl;
+}
+
+1.b.
+
+1.c.
+Pointer p didn't actually point to any location in memory; hypotenuse tried to assign in a double, but p is a pointer to a double, not a double itself. I changed p to point to a double x, and then everything else worked as expected.
+
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+void hypotenuse(double leg1, double leg2, double* resultPtr)
+{
+    *resultPtr = sqrt(leg1*leg1 + leg2*leg2);
+}
+
+int main()
+{
+    double x;
+    double* p = &x;
+    hypotenuse(1.5, 2.0, p);
+    cout << "The hypotenuse is " << *p << endl;
+}
+
+1.d.
+The function tried to increment pointers (which can't be incremented), and compare arrays (which can't be compared directly). Keeping in line with my percieved intention of the implementation, I assigned each array to a pointer and then incremented the pointer. I also dereferenced the pointer in any cases where a comparison was being made so that values, not memory addresses, were compared. 
+
+#include <iostream>
+using namespace std;
+
+    // return true if two C strings are equal
+bool match(const char str1[], const char str2[])
+{
+    const char *p1 = str1;
+    const char *p2 = str2;
+    while (*p1 != 0  &&  *p2 != 0)  // zero bytes at ends
+    {
+        if (*p1 != *p2)  // compare corresponding characters
+            return false;
+        p1++;            // advance to the next character
+        p2++;
+    }
+    return *p1 == *p2;   // both ended at same time?
+}
+
+int main()
+{
+    char a[10] = "pointy";
+    char b[10] = "pointless";
+
+    if (match(a,b))
+        cout << "They're the same!\n";
+}
