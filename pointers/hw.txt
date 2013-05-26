@@ -1,3 +1,5 @@
+Harrison Liddiard - CS 31 Project 6
+
 1.a.
 int main()
 {
@@ -17,8 +19,43 @@ int main()
     cout << endl;
 }
 
+--------------------
 1.b.
+The pointer was not passed by referece to findDisorder, so when the main function tried to cout it, it was not pointing to the memory location defined in findDisorder. Passing it by reference caused the changes made in findDisorder to be reflected outside the function and the program to behave as intended.
 
+#include <iostream>
+using namespace std;
+
+void findDisorder(int arr[], int n, int* &p)
+{
+    for (int k = 1; k < n; k++)
+    {
+        if (arr[k] < arr[k-1])
+        {
+                p = arr + k;
+                return;
+        }
+    }
+    p = NULL;
+}       
+    
+int main()
+{
+    int nums[6] = { 10, 20, 20, 40, 30, 50 };
+    int* ptr;
+
+    findDisorder(nums, 6, ptr);
+    if (ptr == NULL)
+        cout << "The array is ordered" << endl;
+    else
+    {
+        cout << "The disorder is at address " << ptr << endl;
+        cout << "It's at index " << ptr - nums << endl;
+        cout << "The item's value is " << *ptr << endl;
+    }
+}
+
+--------------------
 1.c.
 Pointer p didn't actually point to any location in memory; hypotenuse tried to assign in a double, but p is a pointer to a double, not a double itself. I changed p to point to a double x, and then everything else worked as expected.
 
@@ -39,6 +76,7 @@ int main()
     cout << "The hypotenuse is " << *p << endl;
 }
 
+--------------------
 1.d.
 The function tried to increment pointers (which can't be incremented), and compare arrays (which can't be compared directly). Keeping in line with my percieved intention of the implementation, I assigned each array to a pointer and then incremented the pointer. I also dereferenced the pointer in any cases where a comparison was being made so that values, not memory addresses, were compared. 
 
@@ -68,3 +106,103 @@ int main()
     if (match(a,b))
         cout << "They're the same!\n";
 }
+
+--------------------
+1.e.
+The main routine attempts to assign and integer pointer to the output of computeSquares. The problem is that arr, the array that computeSquares returns, is local to the computeSquares function. So while the memory location still exists at every point during the code execution, accessing it from outside that function produces undefined behavior.
+
+====================
+2.
+#include <iostream>
+using namespace std;
+
+int main () {
+    string *fp;
+    string fish[5];
+    fp = &fish[4];
+    *fp = "salmon";
+    //(&fish + 3) = "yellowtail";
+    fp -= 3;
+    fp[1] = "eel";
+    fp[0] = "tuna";
+    bool d = fp == fish;
+    bool b = *fp == *++fp;
+}
+
+====================
+3.a.
+double computeAverage(const double* scores, int nScores)
+{
+    const double* ptr = scores;
+    double tot = 0;
+    for (int i = 0; i < nScores; i++) {
+        tot += *(ptr + i);
+    }
+    return tot/nScores;
+}
+
+--------------------
+3.b.
+const char* findTheChar(const char str[], char chr)
+{
+    const char* start = str;
+    for (int k = 0; *(start+k) != 0; k++)
+        if (*(start+k) == chr)
+            return (start+k);
+            
+    return NULL;
+}
+
+--------------------
+3.c.
+const char* findTheChar(const char str[], char chr)
+{
+    while(*str != '\0') {
+        if (*str == chr)
+            return str;
+        str++;
+    }
+    return NULL;
+}
+
+====================
+4.
+This program:
+Declares an array of 6 integers { 5, 3, 4, 17, 22, 19 }
+Passes a pointer to the first and third positions of the array to minimart.
+minimart:
+Returns the lesser of the values of the two pointers, which in this case, is the third element of the array
+Back in main:
+ptr, an integer pointer, gets assigned to the third element of the array
+ptr+1, the fourth element of the array, is set to 9 { 5, 3, 4, 9, 22, 19 }
+ptr is advanced two places to point at the fifth element of the array
+The fifth element of the array is set to -1 { 5, 3, 4, 9, -1, 19 }
+The second element in the array is set to 79 { 5, 79, 4, 9, -1, 19 }
+The function prints the difference between the address of the sixth element in the array and the address which ptr points to, which is the fifth element of the array. Consequently, the output here is 1.
+Passes the addresses of the first and second elements of the array to the swap1 function
+swap1:
+Swaps memory addresses of the first and second elements of the array. This only affects local variables a and b, not the memory locations of the array itself { 5, 79, 4, 9, -1, 19 }
+Back in main:
+Passes the address of the first and third elements of the array to swap2
+swap2:
+Swaps the values of the first and third elements of the array { 4, 79, 5, 9, -1, 19 }
+Back in main:
+Prints all elements of the array to the console { 4, 79, 5, 9, -1, 19 } (same as previous)
+
+====================
+5.
+void deleteG(char s[]) {
+    char* ptr = s;
+    while (*ptr != '\0') {
+        if (*ptr == 'g' || *ptr == 'G') {
+            while(*ptr != '\0') {
+                *ptr = *(ptr+1); //move everything forward one to delete the offending 'g'/'G'
+                ptr++;
+            }
+            ptr = s; //move the pointer back to the beginning of the array (somewhat inefficient, but I'm not a genius yet okay Smallberg)
+        }
+        ptr++;
+    }
+}
+
+[end of project]

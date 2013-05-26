@@ -1,26 +1,23 @@
 #include <iostream>
 using namespace std;
 
-    // return true if two C strings are equal
-bool match(const char str1[], const char str2[])
-{
-    const char *p1 = str1;
-    const char *p2 = str2;
-    while (*p1 != 0  &&  *p2 != 0)  // zero bytes at ends
-    {
-        if (*p1 != *p2)  // compare corresponding characters
-            return false;
-        p1++;            // advance to the next character
-        p2++;
+void deleteG(char s[]) {
+    char* ptr = s;
+    while (*ptr != '\0') {
+        if (*ptr == 'g' || *ptr == 'G') {
+            while(*ptr != '\0') {
+                *ptr = *(ptr+1); //move everything forward one to delete the offending 'g'/'G'
+                ptr++;
+            }
+            ptr = s; //move the pointer back to the beginning of the array (somewhat inefficient, but I'm not a genius yet okay Smallberg)
+        }
+        ptr++;
     }
-    return *p1 == *p2;   // both ended at same time?
 }
 
 int main()
 {
-    char a[10] = "pointy";
-    char b[10] = "pointless";
-
-    if (match(a,b))
-        cout << "They're the same!\n";
+    char msg[100] = "I recall the glass gate next to Gus in Lagos, near the gold bridge.";
+    deleteG(msg);
+    cout << msg;  // prints   I recall the lass ate next to us in Laos, near the old bride.
 }
