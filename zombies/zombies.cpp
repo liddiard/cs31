@@ -71,7 +71,8 @@ class Player
     int  col() const;
     int  age() const;
     bool isDead() const;
-    void adjacentZombies(int output[4]) const; //user-added
+    void adjacentZombies(int r, int c, int output[4]) const; //user-added
+    int sumAdjacent(int adjacentZombies[4]) const; //user-added
 
         // Mutators
     string takeComputerChosenTurn();
@@ -79,6 +80,7 @@ class Player
     void   move(int dir);
     bool   shoot(int dir);
     void   setDead();
+    bool shootNearestZombie(); //user-added
 
   private:
     Island* m_island;
@@ -102,6 +104,7 @@ class Island
     int     zombieCount() const;
     int     nZombiesAt(int r, int c) const;
     void    display(string msg) const;
+    bool    isValidPos(int r, int c) const; //user-added;
 
         // Mutators
     bool   addZombie(int r, int c);
@@ -236,46 +239,151 @@ int Player::age() const
     return m_age;
 }
 
-void Player::adjacentZombies(int output[4]) const {
+void Player::adjacentZombies(int r, int c, int output[4]) const {
     //build an array of zombies adjacent to the player
     for (int i = 0; i < 4; i++) {
         output[i] = 0;
     }
     
     //top
-    if (this->row() > 1) { // if one up from the player is a valid position
-        output[0] = m_island->nZombiesAt(this->row()-1-1, this->col()-1);
+    if (r > 1) { // if one up from the player is a valid position
+        output[0] = m_island->nZombiesAt(r-1-1, c-1);
     } else {output[0] = -1;}
     
     //right
-    if (this->col() < m_island->cols()) { // if one right of the player is a valid position
-        output[1] =  m_island->nZombiesAt(this->row()-1, this->col()+1-1);
+    if (c < m_island->cols()) { // if one right of the player is a valid position
+        output[1] =  m_island->nZombiesAt(r-1, c+1-1);
     } else {output[1] = -1;}
     
     //down
-    if (this->row() < m_island->rows()) { // if one down from the player is a valid position
-        output[2] =  m_island->nZombiesAt(this->row()+1-1, this->col()-1);
+    if (r < m_island->rows()) { // if one down from the player is a valid position
+        output[2] =  m_island->nZombiesAt(r+1-1, c-1);
     } else {output[2] = -1;}
     
     //left
-    if (this->col() > 1) { // if one right of the player is a valid position
-        output[3] =  m_island->nZombiesAt(this->row()-1, this->col()-1-1);
+    if (c > 1) { // if one right of the player is a valid position
+        output[3] =  m_island->nZombiesAt(r-1, c-1-1);
     } else {output[3] = -1;}
     
 }
 
-string Player::takeComputerChosenTurn()
-{
-    int adjacentZombies[4] = {0,0,0,0};
-    this->adjacentZombies(adjacentZombies);
+bool Player::shootNearestZombie() {
+    int closestZombieInDir[4] = {1024,1024,1024,1024};
+
+    //up
+    for (int i = this->row(); i > 0; i--) {
+        if (m_island->nZombiesAt(i, this->col()-1)) {
+            closestZombieInDir[0] = abs(i - this->row());
+            break;
+        }
+    }
+
+    //down
+    for (int i = this->row(); i <= m_island->rows(); i++) { //FLAG: might need to be changed to '<'
+        if (m_island->nZombiesAt(i, this->col()-1)) {
+            closestZombieInDir[1] = abs(i - this->row());
+            break;
+        }
+    }
+
+    //left
+    for (int i = this->col(); i > 0; i--) {
+        if (m_island->nZombiesAt(this->row()-1, i)) {
+            closestZombieInDir[2] = abs(i - this->col());
+            break;
+        }
+    }
+
+    //right
+    for (int i = this->col(); i <= m_island->cols(); i++) { //FLAG: might need to be changed to '<'
+        if (m_island->nZombiesAt(this->row()-1, i)) {
+            closestZombieInDir[3] = abs(i - this->col());
+            break;
+        }
+    }
     
+    /* DEBUG
+    for (int i = 0; i < 4; i++) {
+        cerr << closestZombieInDir[i] << ", ";
+    }
+    */
+    
+    if (closestZombieInDir[0] < closestZombieInDir[1] && closestZombieInDir[0] < closestZombieInDir[2] && closestZombieInDir[0] < closestZombieInDir[3]) {
+        return this->shoot(UP);
+    } else if (closestZombieInDir[1] < closestZombieInDir[0] && closestZombieInDir[1] < closestZombieInDir[2] && closestZombieInDir[1] < closestZombieInDir[3]) {
+        return this->shoot(DOWN);
+    } else if (closestZombieInDir[2] < closestZombieInDir[0] && closestZombieInDir[2] < closestZombieInDir[1] && closestZombieInDir[2] < closestZombieInDir[3]) {
+        return this->shoot(LEFT);
+    } else {
+        return this->shoot(RIGHT);
+    }
+}
+
+int Player::sumAdjacent(int adjacentZombies[4]) const {
     int totalAdjacent = 0;
     for (int i = 0; i < 4; i++) {
         if (adjacentZombies[i] != -1)
             totalAdjacent += adjacentZombies[i];
     }
-    if (!totalAdjacent) {
-        //this->shootNearestZombie();
+    return totalAdjacent;
+}
+
+string Player::takeComputerChosenTurn()
+{
+    int adjacentZombies[4] = {0,0,0,0};
+    this->adjacentZombies(this->row(), this->col(), adjacentZombies);
+    
+    //if there aren't any adjacent zombies, blast the nearest one
+    if (!sumAdjacent(adjacentZombies)) {
+        bool hit;
+        hit = this->shootNearestZombie();
+        if (hit) {
+            return "Shot and hit!";
+        } else {
+            return "Shot and missed!";
+        }
+    } else {
+        int scope[4] = {-1,-1,-1,-1};
+        int adjacentZombiesTop[4] = {0,0,0,0};
+        int adjacentZombiesRight[4] = {0,0,0,0};
+        int adjacentZombiesDown[4] = {0,0,0,0};
+        int adjacentZombiesLeft[4] = {0,0,0,0};
+        
+        //top
+        if (m_island->isValidPos(this->row()-1, this->col())) {
+            this->adjacentZombies(this->row()-1, this->col(), adjacentZombiesTop);
+            scope[0] = this->sumAdjacent(adjacentZombiesTop);
+        }
+        
+        //right
+        if (m_island->isValidPos(this->row(), this->col()+1)) {
+            this->adjacentZombies(this->row(), this->col()+1, adjacentZombiesRight);
+            scope[1] = this->sumAdjacent(adjacentZombiesTop);
+        }
+        
+        //down
+        if (m_island->isValidPos(this->row()+1, this->col())) {
+            this->adjacentZombies(this->row()+1, this->col(), adjacentZombiesDown);
+            scope[2] = this->sumAdjacent(adjacentZombiesTop);
+        }
+        
+        //left
+        if (m_island->isValidPos(this->row(), this->col()-1)) {
+            this->adjacentZombies(this->row(), this->col()-1, adjacentZombiesLeft);
+            scope[3] = this->sumAdjacent(adjacentZombiesTop);
+        }
+        
+        if (scope[0] != -1 && scope[0] < scope[1] && scope[0] < scope[2] && scope[0] < scope[3]) {
+            this->move(UP);
+        } else if (scope[1] != -1 && scope[1] < scope[0] && scope[1] < scope[2] && scope[1] < scope[3]) {
+            this->move(DOWN);
+        } else if (scope[2] != -1 && scope[2] < scope[0] && scope[2] < scope[1] && scope[2] < scope[3]) {
+            this->move(LEFT);
+        } else {
+            this->move(RIGHT);
+        }
+        
+        return "Moved.";
     }
         
     // TODO:  replace this implementation.
@@ -384,7 +492,7 @@ bool Player::isDead() const
 
 void Player::setDead()
 {
-    m_dead = false; //TODO: set this back to true after debugging
+    m_dead = true; //DONE: set this back to true after debugging
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -577,6 +685,14 @@ bool Island::moveZombies()
     return (!m_player->isDead());
 }
 
+bool Island::isValidPos(int r, int c) const {
+    if (r > 0 && r <= this->rows() && c > 0 && c <= this->cols()) {
+        return true;
+    } else {
+        return false;
+    } 
+}
+
 ///////////////////////////////////////////////////////////////////////////
 //  Game implementations
 ///////////////////////////////////////////////////////////////////////////
@@ -743,7 +859,7 @@ int main()
 
       // Create a game
       // Use this instead to create a mini-game:   Game g(3, 3, 2);
-    Game g(15, 18, 10);
+    Game g(15, 18, 100);
 
       // Play the game
     g.play();
