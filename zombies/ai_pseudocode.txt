@@ -1,0 +1,2 @@
+ store the number of zombies top,right,down,left of the player in an array
+    store [invalid] in the array if the move would be invalid (off the grid)

@@ -1,12 +1,12 @@
 // zombies.cpp
 
-// Portions you are to complete are marked with a TODO: comment.
+// Portions you are to complete are marked with a TO-DO: comment.
 // We've provided some incorrect return statements (so indicated) just
 // to allow this skeleton program to compile and run, albeit incorrectly.
 // The first thing you probably want to do is implement the trivial
 // functions (marked TRIVIAL).  Then get Island::display going.  That gives
 // you more flexibility in the order you tackle the rest of the functionality.
-// As you finish implementing each TODO: item, remove its TODO: comment.
+// As you finish implementing each TO-DO: item, remove its TO-DO: comment.
 
 #include <iostream>
 #include <string>
@@ -71,6 +71,7 @@ class Player
     int  col() const;
     int  age() const;
     bool isDead() const;
+    void adjacentZombies(int output[4]) const; //user-added
 
         // Mutators
     string takeComputerChosenTurn();
@@ -159,8 +160,8 @@ int Zombie::row() const
 
 int Zombie::col() const
 {
-    // TODO: TRIVIAL:  return what column the Zombie is at
-    return 1;  // this is wrong -- replace it
+    // DONE: TRIVIAL:  return what column the Zombie is at
+    return m_col;  // this is wrong -- replace it
 }
 
 void Zombie::move()
@@ -169,13 +170,27 @@ void Zombie::move()
     switch (rand() % 4)
     {
       case UP:
-        // TODO:  Move the zombie up one row if possible.
+        // DONE:  Move the zombie up one row if possible.
+        if (this->row() > 0) {
+            this->m_row--; //move up
+        }
         break;
       case DOWN:
+        if (this->row() < m_island->rows()-1) {
+            this->m_row++; //move down
+        }
+          break;
       case LEFT:
+        if (this->col() > 0) {
+            this->m_col--; //move left
+        }
+          break;
       case RIGHT:
-        // TODO:  Implement the other movements.
-        break;
+        if (this->col() < m_island->cols()-1) {
+            this->m_col++; //move right
+        }
+          break;
+        // DONE:  Implement the other movements.
     }
 }
 
@@ -205,27 +220,66 @@ Player::Player(Island* ip, int r, int c)
 
 int Player::row() const
 {
-    // TODO:  TRIVIAL:  return the row the player is at
-    return 1;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return the row the player is at
+    return m_row; 
 }
 
 int Player::col() const
 {
-    // TODO:  TRIVIAL:  return the column the player is at
-    return 1;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return the column the player is at
+    return m_col;
 }
 
 int Player::age() const
 {
-    // TODO:  TRIVIAL:  return the player's age
-    return 0;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return the player's age
+    return m_age;
+}
+
+void Player::adjacentZombies(int output[4]) const {
+    //build an array of zombies adjacent to the player
+    for (int i = 0; i < 4; i++) {
+        output[i] = 0;
+    }
+    
+    //top
+    if (this->row() > 1) { // if one up from the player is a valid position
+        output[0] = m_island->nZombiesAt(this->row()-1-1, this->col()-1);
+    } else {output[0] = -1;}
+    
+    //right
+    if (this->col() < m_island->cols()) { // if one right of the player is a valid position
+        output[1] =  m_island->nZombiesAt(this->row()-1, this->col()+1-1);
+    } else {output[1] = -1;}
+    
+    //down
+    if (this->row() < m_island->rows()) { // if one down from the player is a valid position
+        output[2] =  m_island->nZombiesAt(this->row()+1-1, this->col()-1);
+    } else {output[2] = -1;}
+    
+    //left
+    if (this->col() > 1) { // if one right of the player is a valid position
+        output[3] =  m_island->nZombiesAt(this->row()-1, this->col()-1-1);
+    } else {output[3] = -1;}
+    
 }
 
 string Player::takeComputerChosenTurn()
 {
-    // TODO:  replace this implementation:
-        stand();
-        return "Stood";
+    int adjacentZombies[4] = {0,0,0,0};
+    this->adjacentZombies(adjacentZombies);
+    
+    int totalAdjacent = 0;
+    for (int i = 0; i < 4; i++) {
+        if (adjacentZombies[i] != -1)
+            totalAdjacent += adjacentZombies[i];
+    }
+    if (!totalAdjacent) {
+        //this->shootNearestZombie();
+    }
+        
+    // TODO:  replace this implementation.
+    
     // Your replacement implementation should do something intelligent
     // and return a string that describes what happened.  When you've
     // decided what action to take, take it by calling move, shoot, or stand.
@@ -241,6 +295,7 @@ string Player::takeComputerChosenTurn()
     //   else shoot in the direction of the nearest zombie I can hit.
 
     // A more aggressive strategy is possible, where you hunt down zombies.
+    return "Busted a move.";
 }
 
 void Player::stand()
@@ -254,13 +309,27 @@ void Player::move(int dir)
     switch (dir)
     {
       case UP:
-        // TODO:  Move the player up one row if possible.
-        break;
+        // DONE:  Move the player up one row if possible.
+        if (this->row() > 1) {
+            this->m_row--; //move up
+        }
+          break;
       case DOWN:
+        if (this->row() < m_island->rows()) {
+            this->m_row++; //move down
+        }
+          break;
       case LEFT:
+        if (this->col() > 1) {
+            this->m_col--; //move left
+        }
+          break;
       case RIGHT:
-        // TODO:  Implement the other movements.
-        break;
+        if (this->col() < m_island->cols()) {
+            this->m_col++; //move right
+        }
+          break;
+        // DONE:  Implement the other movements.
     }
 }
 
@@ -268,22 +337,54 @@ bool Player::shoot(int dir)
 {
     m_age++;
 
-    if (rand() % 3 != 0)  // miss with 2/3 probability
-        return false;
-
-    // TODO:  destroy the nearest zombie in direction dir
-    return false;  // this is wrong -- replace it
+    //TODO: ***PROBABLITY HERE***
+    switch(dir) {
+        case UP:
+            for (int i = this->row(); i > 0; i--) {
+                if (m_island->nZombiesAt(i, this->col()-1)) {
+                    m_island->destroyZombie(i, this->col()-1);
+                    return true;
+                }
+            }
+            return false;
+        case DOWN:
+            for (int i = this->row(); i <= m_island->rows(); i++) { //FLAG: might need to be changed to '<'
+                if (m_island->nZombiesAt(i, this->col()-1)) {
+                    m_island->destroyZombie(i, this->col()-1);
+                    return true;
+                }
+            }
+            return false;
+        case LEFT:
+            for (int i = this->col(); i > 0; i--) {
+                if (m_island->nZombiesAt(this->row()-1, i)) {
+                    m_island->destroyZombie(this->row()-1, i);
+                    return true;
+                }
+            }
+            return false;
+        case RIGHT:
+            for (int i = this->col(); i <= m_island->cols(); i++) { //FLAG: might need to be changed to '<'
+                if (m_island->nZombiesAt(this->row()-1, i)) {
+                    m_island->destroyZombie(this->row()-1, i);
+                    return true;
+                }
+            }
+            return false;
+    }
+    // DONE:  destroy the nearest zombie in direction dir
+    return false;
 }
 
 bool Player::isDead() const
 {
-    // TODO:  TRIVIAL:  return whether the player is dead
-    return false;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return whether the player is dead
+    return this->m_dead;
 }
 
 void Player::setDead()
 {
-    m_dead = true;
+    m_dead = false; //TODO: set this back to true after debugging
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -306,19 +407,23 @@ Island::Island(int nRows, int nCols)
 
 Island::~Island()
 {
-    // TODO:  delete the player and all remaining dynamically allocated zombies
+    delete m_player; //should this be a pointer?
+    for (int i = 0; i < this->m_nZombies; i++) {
+        delete m_zombies[i]; //should this be a pointer?
+    }
+    // DONE:  delete the player and all remaining dynamically allocated zombies
 }
 
 int Island::rows() const
 {
-    // TODO:  TRIVIAL:  return the number of rows in the island
-    return 1;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return the number of rows in the island
+    return m_rows;  // this is wrong -- replace it
 }
 
 int Island::cols() const
 {
-    // TODO:  TRIVIAL:  return the number of columns in the island
-    return 1;  // this is wrong -- replace it
+    // DONE:  TRIVIAL:  return the number of columns in the island
+    return m_cols;  // this is wrong -- replace it
 }
 
 Player* Island::player() const
@@ -333,8 +438,14 @@ int Island::zombieCount() const
 
 int Island::nZombiesAt(int r, int c) const
 {
-    // TODO:  return the number of zombies at row r, column c
-    return 0;  // this is wrong -- replace it
+    // DONE:  return the number of zombies at row r, column c
+    int count = 0;
+    for (int i = 0; i < this->zombieCount(); i++) {
+        if (m_zombies[i]->row() == r && m_zombies[i]->col() == c) {
+            count++;
+        }
+    }
+    return count;  // this is wrong -- replace it
 }
 
 void Island::display(string msg) const
@@ -350,9 +461,24 @@ void Island::display(string msg) const
             grid[r][c] = '.';
 
         // Indicate each zombie's position
-    // TODO:  If one zombie is at some grid point, set the char to 'Z'.
+    // DONE:  If one zombie is at some grid point, set the char to 'Z'.
     //        If it's 2 though 8, set it to '2' through '8'.
     //        For 9 or more, set it to '9'.
+    int zombiesAtPoint = 0;
+    for (r = 0; r < rows(); r++) {
+        for (c = 0; c < cols(); c++) {
+            zombiesAtPoint = nZombiesAt(r,c);
+            if (zombiesAtPoint < 1) {
+                grid[r][c] = '.';
+            } else if (zombiesAtPoint == 1) {
+                grid[r][c] = 'Z';                
+            } else if (zombiesAtPoint < 9) {
+                grid[r][c] = '0' + zombiesAtPoint;
+            } else {
+                grid[r][c] = '9';
+            }
+        }
+    }
 
         // Indicate player's position
     if (m_player != NULL)
@@ -397,8 +523,14 @@ bool Island::addZombie(int r, int c)
     // If MAXZOMBIES have already been added, return false.  Otherwise,
     // dynamically allocate a new zombie at coordinates (r,c).  Save the
     // pointer to the newly allocated zombie and return true.
-      // TODO:  Implement this
-    return false;  // this is wrong -- replace it
+      // DONE:  Implement this
+    if (this->zombieCount() >= MAXZOMBIES)
+        return false;
+    else {
+        m_zombies[this->zombieCount()] = new Zombie(this, r, c);
+        m_nZombies++;
+        return true;
+    }
 }
 
 bool Island::addPlayer(int r, int c)
@@ -414,21 +546,35 @@ bool Island::addPlayer(int r, int c)
 
 bool Island::destroyZombie(int r, int c)
 {
-    // TODO:  destroy one zombie at row r, column c
-    return false;  // this is wrong -- replace it
+    // DONE:  destroy one zombie at row r, column c
+    for (int i = 0; i < m_nZombies; i++) {
+        if (m_zombies[i]->row() == r && m_zombies[i]->col() == c) {
+            delete m_zombies[i];
+            m_zombies[i] = m_zombies[m_nZombies-1];
+            m_zombies[m_nZombies-1] = 0;
+            m_nZombies--;
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Island::moveZombies()
 {
-    for (int k = 0; k < m_nZombies; k++)
+    for (int k = 0; k < this->zombieCount(); k++)
     {
-      // TODO:  Have the k-th zombie on the island make one move.
+        this->m_zombies[k]->move();
+        if (m_zombies[k]->row()+1 == m_player->row() && m_zombies[k]->col()+1 == m_player->col()) {
+            this->m_player->setDead();
+        }   
+      // DONE:  Have the k-th zombie on the island make one move.
       //        If that move results in that zombie being in the same
       //        position as the player, the player dies.
     }
 
+
       // return true if the player is still alive, false otherwise
-    return ! m_player->isDead();
+    return (!m_player->isDead());
 }
 
 ///////////////////////////////////////////////////////////////////////////
@@ -597,7 +743,7 @@ int main()
 
       // Create a game
       // Use this instead to create a mini-game:   Game g(3, 3, 2);
-    Game g(15, 18, 100);
+    Game g(15, 18, 10);
 
       // Play the game
     g.play();

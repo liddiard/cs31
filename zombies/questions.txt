@@ -1,0 +1,3 @@
+In the destructor, do you use "delete" on the pointers?
+Is there any way to test if the destructor is working?
+When we delete a zombie, does that mean we have to move the entire array back?
