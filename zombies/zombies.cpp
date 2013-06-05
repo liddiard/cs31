@@ -373,9 +373,11 @@ string Player::takeComputerChosenTurn()
             scope[3] = this->sumAdjacent(adjacentZombiesLeft);
         }
         
+        /* DEBUG
         for (int i = 0; i < 4; i++) {
             cerr << scope[i] << ", ";
         }
+        */
         
         if (scope[0] <= scope[1] && scope[0] <= scope[2] && scope[0] <= scope[3]) {
             this->move(UP);
@@ -390,7 +392,7 @@ string Player::takeComputerChosenTurn()
         return "Moved.";
     }
         
-    // TODO:  replace this implementation.
+    // DONE:  replace this implementation.
     
     // Your replacement implementation should do something intelligent
     // and return a string that describes what happened.  When you've
@@ -864,7 +866,7 @@ int main()
 
       // Create a game
       // Use this instead to create a mini-game:   Game g(3, 3, 2);
-    Game g(15, 18, 100);
+    Game g(15, 18, 10);
 
       // Play the game
     g.play();
