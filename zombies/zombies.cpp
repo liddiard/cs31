@@ -343,11 +343,11 @@ string Player::takeComputerChosenTurn()
             return "Shot and missed!";
         }
     } else {
-        int scope[4] = {-1,-1,-1,-1};
-        int adjacentZombiesTop[4] = {0,0,0,0};
-        int adjacentZombiesRight[4] = {0,0,0,0};
-        int adjacentZombiesDown[4] = {0,0,0,0};
-        int adjacentZombiesLeft[4] = {0,0,0,0};
+        int scope[4] = {1024,1024,1024,1024};
+        int adjacentZombiesTop[4] = {8,8,8,8};
+        int adjacentZombiesRight[4] = {8,8,8,8};
+        int adjacentZombiesDown[4] = {8,8,8,8};
+        int adjacentZombiesLeft[4] = {8,8,8,8};
         
         //top
         if (m_island->isValidPos(this->row()-1, this->col())) {
@@ -358,26 +358,30 @@ string Player::takeComputerChosenTurn()
         //right
         if (m_island->isValidPos(this->row(), this->col()+1)) {
             this->adjacentZombies(this->row(), this->col()+1, adjacentZombiesRight);
-            scope[1] = this->sumAdjacent(adjacentZombiesTop);
+            scope[1] = this->sumAdjacent(adjacentZombiesRight);
         }
         
         //down
         if (m_island->isValidPos(this->row()+1, this->col())) {
             this->adjacentZombies(this->row()+1, this->col(), adjacentZombiesDown);
-            scope[2] = this->sumAdjacent(adjacentZombiesTop);
+            scope[2] = this->sumAdjacent(adjacentZombiesDown);
         }
         
         //left
         if (m_island->isValidPos(this->row(), this->col()-1)) {
             this->adjacentZombies(this->row(), this->col()-1, adjacentZombiesLeft);
-            scope[3] = this->sumAdjacent(adjacentZombiesTop);
+            scope[3] = this->sumAdjacent(adjacentZombiesLeft);
         }
         
-        if (scope[0] != -1 && scope[0] < scope[1] && scope[0] < scope[2] && scope[0] < scope[3]) {
+        for (int i = 0; i < 4; i++) {
+            cerr << scope[i] << ", ";
+        }
+        
+        if (scope[0] <= scope[1] && scope[0] <= scope[2] && scope[0] <= scope[3]) {
             this->move(UP);
-        } else if (scope[1] != -1 && scope[1] < scope[0] && scope[1] < scope[2] && scope[1] < scope[3]) {
+        } else if (scope[1] <= scope[0] && scope[1] <= scope[2] && scope[1] <= scope[3]) {
             this->move(DOWN);
-        } else if (scope[2] != -1 && scope[2] < scope[0] && scope[2] < scope[1] && scope[2] < scope[3]) {
+        } else if (scope[2] <= scope[0] && scope[2] <= scope[1] && scope[2] <= scope[3]) {
             this->move(LEFT);
         } else {
             this->move(RIGHT);
@@ -445,7 +449,8 @@ bool Player::shoot(int dir)
 {
     m_age++;
 
-    //TODO: ***PROBABLITY HERE***
+    if (rand() % 3 != 0)  // miss with 2/3 probability
+        return false;
     switch(dir) {
         case UP:
             for (int i = this->row(); i > 0; i--) {
